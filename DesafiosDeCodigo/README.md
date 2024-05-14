@@ -21,8 +21,8 @@ Para executar qualquer um dos programas, você pode simplesmente compilar e exec
 Por exemplo, para executar o programa BankAccountValidation:
 
 ```bash
-javac BankAccountValidation.java
-java BankAccountValidation
+javac AccountNumberVerifier.java
+java AccountNumberVerifier
 ```
 
 # Contribuição
