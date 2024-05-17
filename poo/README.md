@@ -20,7 +20,7 @@ Este é um projeto que implementa funcionalidades básicas de um iPhone, incluin
 - Método `addNewTab()`: Adiciona uma nova aba de navegação.
 - Método `refreshPage()`: Atualiza a página atualmente exibida.
 
-
+```mermaid
 classDiagram
     class Iphone {
         +start()
@@ -63,3 +63,4 @@ classDiagram
     Feature <|-- WebBrowser
     Feature <|-- Phone
     Feature <|-- MusicPlayer
+```
