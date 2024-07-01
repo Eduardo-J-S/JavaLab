@@ -1,6 +1,7 @@
 package one.digitalinnovation.gof.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -26,25 +27,34 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public Iterable<Cliente> buscarTodos() {
-        return clienteRepository.findAll();
+        Iterable<Cliente> clientes = clienteRepository.findAll();
+        if (!clientes.iterator().hasNext()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Nenhum cliente encontrado");
+        }
+        return clientes;
     }
 
     @Override
     public Cliente buscarPorId(Long id) {
-        return clienteRepository.findById(id).
-        orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado com o ID: " + id));
+        return clienteRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado com o ID: " + id));
     }
 
     @Override
     public void inserir(Cliente cliente) {
-        salvarClienteComCep(cliente);
+        try {
+            salvarClienteComCep(cliente);
+        } catch (DataAccessException ex) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao inserir cliente", ex);
+        }
     }
 
     @Override
     public void atualizar(Long id, Cliente cliente) {
-       Cliente clienteBd = clienteRepository.findById(id)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado com o ID: " + id));
-        
+        Cliente clienteBd = clienteRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Cliente não encontrado com o ID: " + id));
+
         clienteBd.setNome(cliente.getNome());
         clienteBd.setEndereco(cliente.getEndereco());
 
@@ -69,5 +79,5 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setEndereco(endereco);
         clienteRepository.save(cliente);
     }
-    
+
 }
